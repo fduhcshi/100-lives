@@ -1,0 +1,49 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 虚拟环境
+.venv/
+venv/
+env/
+ENV/
+
+# 测试 / 类型检查 / 覆盖率缓存
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# 打包产物
+build/
+dist/
+*.egg-info/
+*.egg
+
+# ===== 本地秘密配置（真实网关地址与密钥，勿提交）=====
+.env
+.env.*
+!.env.example
+
+# ===== 运行产物 =====
+# 模拟结果落盘目录（含用户输入的隐私描述）
+data/runs/
+*.log
+*.sqlite3
+*.db
+
+# ===== 编辑器 / 系统 =====
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+
+# ===== 本机工作区元数据（非项目内容）=====
+.workbuddy/

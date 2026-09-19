@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>100 Lives · AI 平行人生模拟器</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <h1>100 LIVES<span class="star" aria-hidden="true">✦</span></h1>
+      <p class="subtitle">在决定之前，把人生过 100 遍</p>
+      <p class="tagline">AI 平行人生模拟器 · 本地运行 · 所有数字是模拟出现频率，不是现实概率</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- ============ 输入表单 ============ -->
+    <div id="form-section" class="card" style="max-width: 860px; margin: 0 auto;">
+      <form id="simulate-form" novalidate>
+
+        <div class="field" id="field-profile">
+          <label for="profile">请描述你现在的情况</label>
+          <textarea id="profile" name="profile" rows="6" maxlength="5000"
+            placeholder="例如：我 30 岁，在一家普通公司做运营专员，最近在纠结要不要换城市发展……&#10;可以写：年龄、城市、职业、收入、关系、目标、在意/担心的事…"></textarea>
+          <div class="char-count"><span id="char-count">0</span> / 5000</div>
+          <p class="field-error" id="error-profile" role="alert"></p>
+        </div>
+
+        <div class="form-row">
+          <div class="field" id="field-choice-a">
+            <div class="chip-input-head">
+              <span class="chip chip-a"><span class="dot" aria-hidden="true"></span>选择 A</span>
+            </div>
+            <label for="choice-a" class="visually-hidden-label">选择 A</label>
+            <input type="text" id="choice-a" name="choice_a" maxlength="300"
+              placeholder="例如：留在现在的城市" autocomplete="off">
+            <p class="field-error" id="error-choice-a" role="alert"></p>
+          </div>
+          <div class="field" id="field-choice-b">
+            <div class="chip-input-head">
+              <span class="chip chip-b"><span class="dot" aria-hidden="true"></span>选择 B</span>
+            </div>
+            <label for="choice-b" class="visually-hidden-label">选择 B</label>
+            <input type="text" id="choice-b" name="choice_b" maxlength="300"
+              placeholder="例如：去另一座城市接受新工作" autocomplete="off">
+            <p class="field-error" id="error-choice-b" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="form-row-3">
+          <div class="field">
+            <label for="years">想看未来多少年</label>
+            <select id="years" name="years">
+              <option value="3">3 年</option>
+              <option value="5" selected>5 年</option>
+              <option value="10">10 年</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="num-lives">每个选择模拟多少条人生</label>
+            <select id="num-lives" name="num_lives">
+              <option value="5">5（开发测试）</option>
+              <option value="20" selected>20（推荐）</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 10px;">
+          <button type="button" class="link-btn" id="fill-sample">填入示例</button>
+        </div>
+
+        <div class="field" style="margin-top: 14px;">
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn">开始模拟 ✦</button>
+        </div>
+
+        <div class="alert alert-error" id="submit-error" role="alert" style="display: none;"></div>
+      </form>
+    </div>
+
+    <!-- ============ 进度（提交后显示） ============ -->
+    <div id="progress-section" style="display: none; max-width: 720px; margin: 0 auto;">
+      <div class="card">
+        <div class="progress-head">
+          <h2>正在生成你的平行人生…</h2>
+          <span class="progress-pct" id="progress-pct" aria-live="polite">0%</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar" aria-label="模拟进度">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <ol class="stepper" id="stepper">
+          <li data-stage="universes"><span class="node" aria-hidden="true">1</span><span class="label">平行世界</span></li>
+          <li data-stage="simulation"><span class="node" aria-hidden="true">2</span><span class="label">人生模拟</span></li>
+          <li data-stage="clustering"><span class="node" aria-hidden="true">3</span><span class="label">路径聚类</span></li>
+          <li data-stage="comparison"><span class="node" aria-hidden="true">4</span><span class="label">世界对比</span></li>
+          <li data-stage="summary"><span class="node" aria-hidden="true">5</span><span class="label">生成报告</span></li>
+        </ol>
+
+        <p class="status-msg" id="status-msg" aria-live="polite">正在提交模拟请求…</p>
+        <p class="status-detail" id="status-detail"></p>
+        <p class="retry-note" id="retry-note">⚠ 网络暂时不通，正在自动重试…</p>
+        <p class="elapsed">已用时 <span id="elapsed">00:00</span></p>
+
+        <div class="alert alert-error" id="progress-error" role="alert" style="display: none;"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p class="f-note">100 LIVES · 本地运行的 AI 平行人生模拟器。本页所有数字是『在当前模型与提示词下的模拟出现频率』，不是现实概率，也不是预测。</p>
+    </div>
+  </footer>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

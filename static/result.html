@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>你的平行人生 · 100 LIVES</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- 载入中 -->
+  <div id="loading" class="loading-box">
+    <div class="spinner" aria-hidden="true"></div>
+    <p class="msg">正在读取你的平行人生…</p>
+  </div>
+
+  <!-- 未找到 -->
+  <main id="not-found" class="wrap" style="display: none;">
+    <div class="card" style="max-width: 560px; margin: 60px auto; text-align: center;">
+      <h1 style="font-size: 24px;">没有找到这次模拟</h1>
+      <p class="muted">可能链接已失效，或后端服务已重启导致记录丢失。</p>
+      <p style="margin-top: 22px;"><a class="btn btn-primary" href="/">← 返回首页</a></p>
+    </div>
+  </main>
+
+  <!-- 主体（JS 填充） -->
+  <main id="result-main" class="wrap" style="display: none;">
+
+    <p><a class="back-home" href="/">← 返回首页</a></p>
+
+    <header class="result-head" id="result-head">
+      <h1 id="result-title">你的平行人生</h1>
+      <p class="sub" id="result-sub"></p>
+      <div class="choice-line">
+        <div class="choice-options" id="result-choices"></div>
+        <div class="report-actions"><a class="btn download-report" id="download-report" href="#" aria-label="下载 HTML 报告">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3zM5 19h14v2H5v-2z"></path>
+          </svg>
+          <span>下载报告</span>
+        </a><button class="btn" id="share-poster" type="button">↗ 分享海报</button></div>
+      </div>
+      <div class="disclaimer" id="disclaimer" role="note">
+        <span class="icon" aria-hidden="true">⚠</span>
+        <span id="disclaimer-text"></span>
+      </div>
+    </header>
+
+    <div id="full-report">
+    <!-- 01 A / B 总览 -->
+    <section aria-labelledby="sec-overview">
+      <div class="section-head">
+        <span class="accent">✦ 01</span>
+        <h2 id="sec-overview">A / B 总览</h2>
+        <span class="muted small">同一个世界，两种选择各自展开</span>
+      </div>
+      <div class="legend" id="overview-legend"></div>
+      <div class="decision-result" id="decision-result"></div>
+      <div class="overview-grid" id="overview-grid"></div>
+    </section>
+
+    <section id="explore-2" aria-label="调整你的偏好"></section>
+    <section id="explore-1" aria-label="平行世界地图"></section>
+    <section id="explore-3" aria-label="两条人生路线"></section>
+
+    <!-- 02 相同世界，不同选择 -->
+    <section aria-labelledby="sec-matched">
+      <div class="section-head">
+        <span class="accent">✦ 02</span>
+        <h2 id="sec-matched">相同世界，不同选择</h2>
+      </div>
+      <p class="muted" id="matched-intro"></p>
+      <div class="card" id="matched-metrics"></div>
+      <div id="divergence-wrap"></div>
+      <div id="examples-wrap"></div>
+    </section>
+
+    <!-- 03 典型人生路径 -->
+    <section aria-labelledby="sec-clusters">
+      <div class="section-head">
+        <span class="accent">✦ 03</span>
+        <h2 id="sec-clusters">典型人生路径</h2>
+        <span class="muted small">点击任意路径可查看代表轨迹详情</span>
+      </div>
+      <div class="cluster-grid" id="cluster-grid"></div>
+    </section>
+
+    <!-- 04 洞察报告 -->
+    <section aria-labelledby="sec-insight">
+      <div class="section-head">
+        <span class="accent">✦ 04</span>
+        <h2 id="sec-insight">洞察报告</h2>
+      </div>
+      <div class="insight-grid" id="insight-grid"></div>
+      <p class="meta-line" id="stats-line"></p>
+    </section>
+
+    <!-- 05 最典型 & 最意外人生 -->
+    <section aria-labelledby="sec-notable">
+      <div class="section-head">
+        <span class="accent">✦ 05</span>
+        <h2 id="sec-notable">最典型 &amp; 最意外人生</h2>
+        <span class="muted small">点击卡片查看完整时间线，并可与未来的自己对话</span>
+      </div>
+      <div class="notable-grid" id="notable-grid"></div>
+    </section>
+
+    <!-- 06 全部轨迹 -->
+    <section aria-labelledby="sec-all">
+      <div class="section-head">
+        <span class="accent">✦ 06</span>
+        <h2 id="sec-all">全部轨迹</h2>
+      </div>
+      <details class="all-traj">
+        <summary><span class="chev" aria-hidden="true">›</span>展开全部 <span id="traj-count" class="t-nums"></span> 条轨迹</summary>
+        <div class="traj-table-wrap" id="traj-table-wrap"></div>
+      </details>
+    </section>
+
+    </div>
+    <footer style="margin-top: 70px; border-top: 1px solid var(--gridline); padding: 26px 0 40px;">
+      <p class="f-note" style="color: var(--muted); font-size: 12.5px;" id="footer-note"></p>
+    </footer>
+  </main>
+
+  <!-- 轨迹弹窗（时间线 / 聊天两种视图） -->
+  <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-head">
+        <span class="title" id="modal-title"></span>
+        <span class="critic-badge" id="critic-badge" style="display: none;"></span>
+        <span id="modal-head-badges"></span>
+      </div>
+
+      <!-- 时间线视图 -->
+      <div class="modal-body" id="view-timeline">
+        <div class="score-row" id="modal-scores"></div>
+        <div class="vt" id="modal-timeline"></div>
+        <details class="universe-box" id="universe-box" style="display: none;">
+          <summary>这个宇宙的外部条件</summary>
+          <div class="inner" id="universe-inner"></div>
+        </details>
+      </div>
+
+      <!-- 聊天视图 -->
+      <div class="modal-body" id="view-chat" style="display: none;">
+        <p class="muted small" id="chat-head" style="margin: 0 0 12px;"></p>
+        <div class="chat-log" id="chat-log" aria-live="polite"></div>
+        <div class="chat-suggest" id="chat-suggest">
+          <button type="button" class="suggest-chip" data-q="你后悔当初的选择吗？">你后悔当初的选择吗？</button>
+          <button type="button" class="suggest-chip" data-q="这些年最意外的事是什么？">这些年最意外的事是什么？</button>
+        </div>
+        <div class="chat-input-row">
+          <textarea id="chat-input" rows="1" maxlength="2000" placeholder="问问未来的自己…（Enter 发送，Shift+Enter 换行）" aria-label="给未来的自己留言"></textarea>
+          <button type="button" class="btn" id="chat-send">发送</button>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn" id="modal-back" style="display: none;">← 返回时间线</button>
+        <button type="button" class="btn" id="modal-close">关闭</button>
+        <button type="button" class="btn btn-primary" id="modal-chat-btn">和未来的自己聊聊 ✦</button>
+      </div>
+    </div>
+  </div>
+
+  <dialog id="poster-dialog" aria-labelledby="poster-title"><h2 id="poster-title">我的平行人生海报</h2><p>海报包含选项文字、分数、偏好和世界数量，不包含背景描述与聊天记录。分享前请确认选项文字没有隐私信息。</p><img id="poster-preview" alt="平行人生分享海报预览"><p id="poster-status" role="status"></p><div class="report-actions"><a class="btn" id="poster-save" download="100-lives.png">保存 PNG</a><button class="btn" id="poster-close" type="button">关闭</button></div></dialog>
+  <script src="/static/result.js" defer></script>
+</body>
+</html>
