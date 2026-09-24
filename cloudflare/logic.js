@@ -1,5 +1,5 @@
 // Small Cloudflare edition. The local Python pipeline remains the full edition.
-export const MODEL = "@cf/qwen/qwen3-30b-a3b-fp8";
+export const MODEL = "@cf/qwen/qwen3.8-27b";
 export const MAX_LIVES = 3;
 export const DEFAULT_LIVES = 2;
 export const MAX_YEARS = 5;
