@@ -1,7 +1,12 @@
 "use strict";
 (function () {
   var note = document.getElementById("mode-note");
-  note.textContent = "这是 GitHub Pages 静态展示页。生成平行人生需要连接模型，请使用 Cloudflare 在线版或在本地运行项目。";
+  note.textContent = "这是 GitHub Pages 静态展示页。生成平行人生请使用 ";
+  var link = document.createElement("a");
+  link.href = "https://one-hundred-lives.fduhcshi.workers.dev/";
+  link.textContent = "Cloudflare 在线版";
+  note.appendChild(link);
+  note.appendChild(document.createTextNode("（需要访问密码），或在本地运行项目。"));
   note.style.display = "block";
   var button = document.getElementById("submit-btn");
   button.disabled = true;

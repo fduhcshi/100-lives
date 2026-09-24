@@ -90,6 +90,8 @@ python run.py --port 8017
 
 仓库中的 `cloudflare/` 是单独的 Workers AI 体验版，复用 `static/` 的页面和报告格式。它不读取本地 `.env`，也不需要把自己的 API Key 上传到 GitHub 或 Cloudflare。本地 `python run.py` 的配置和完整模拟流程保持原样。
 
+在线地址：[Cloudflare 模拟版](https://one-hundred-lives.fduhcshi.workers.dev/)（需要访问密码）；[GitHub Pages 静态展示](https://fduhcshi.github.io/100-lives/)（不调用模型）。
+
 云端版为了控制 Workers AI 免费额度，默认每个选择 2 条人生，最多 3 条、5 年；省去本地版的 Critic 重生成和模型聚类，结果属于小样本体验。一次模拟大约调用 `2 + 2 × num_lives` 次模型，报告通过 Cloudflare Workflows 保存，免费计划完成后只保留 3 天，请及时下载 HTML。实际可用次数由模型的 Neurons 消耗决定，不保证固定每天多少次。与未来自己对话也会额外消耗额度。
 
 ### 连接 GitHub 并部署
