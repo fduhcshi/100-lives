@@ -26,6 +26,7 @@ dist/
 cloudflare/public/
 docs/pages/
 node_modules/
+.wrangler/
 *.egg-info/
 *.egg
 
@@ -33,6 +34,7 @@ node_modules/
 .env
 .env.*
 !.env.example
+.dev.vars*
 
 # ===== 运行产物 =====
 # 模拟结果落盘目录（含用户输入的隐私描述）

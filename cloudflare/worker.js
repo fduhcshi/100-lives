@@ -1,4 +1,5 @@
 import { WorkflowEntrypoint } from "cloudflare:workers";
+import { authorize } from "./auth.js";
 import { buildResult, DEFAULT_LIVES, MAX_LIVES, MAX_YEARS, MODEL, normalizeTrajectory, normalizeUniverses, parseModelJson, validateRequest } from "./logic.js";
 
 const RUN_ID = /^[a-zA-Z0-9_-]{1,100}$/;
@@ -34,7 +35,6 @@ async function askAI(env, system, prompt, maxTokens = 2000) {
     ],
     max_tokens: maxTokens,
     temperature: 0.7,
-    chat_template_kwargs: { enable_thinking: false },
   });
   return parseModelJson(modelText(response));
 }
@@ -141,13 +141,14 @@ async function futureChat(env, raw) {
     ],
     max_tokens: 450,
     temperature: 0.7,
-    chat_template_kwargs: { enable_thinking: false },
   });
   return json({ reply: modelText(response), future_year: futureYear });
 }
 
 export default {
   async fetch(request, env) {
+    const denied = await authorize(request, env.SITE_PASSWORD_HASH);
+    if (denied) return denied;
     const url = new URL(request.url);
     const path = url.pathname;
     try {

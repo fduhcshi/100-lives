@@ -94,16 +94,16 @@ python run.py --port 8017
 
 ### 连接 GitHub 并部署
 
-1. 在 Cloudflare 的 **Workers & Pages → Create application → Import a repository** 连接 `fduhcshi/100-lives`。Worker 名称填写 `one-hundred-lives`，生产分支选 `main`，根目录为仓库根目录。
-2. Build command 填 `npm run build:web`，Deploy command 填 `npx wrangler deploy`。`wrangler.jsonc` 已配置静态网页、Workers AI binding 和 Workflow binding。首次部署时 `workers_dev` 设为 `false`，避免未加访问限制就暴露模型接口。
-3. 在 **Workers & Pages → one-hundred-lives → Access** 为该 Worker 开启 **All traffic**，策略只允许指定邮箱，并用 One-time PIN 登录。这样网页本身无需添加账号密码，访问者先通过 Cloudflare 验证，再进入完整网页；所有 API 路径也会一起保护。
-4. Access 生效后，把 `wrangler.jsonc` 的 `workers_dev` 改为 `true` 并推送到 `main`；Cloudflare Git 集成会自动构建、发布在线地址。先试一次 2 条人生，再查看 Workers AI 使用量。若模型额度不足，请在 Cloudflare 中调整计划或暂时停止分享链接。
+1. 在 Cloudflare 的 **Workers & Pages → one-hundred-lives → Settings → Builds → Connect** 连接 GitHub 仓库 `fduhcshi/100-lives`，生产分支选 `main`，根目录为仓库根目录。若尚未创建 Worker，也可从 **Create application → Import a repository** 开始。
+2. Build command 填 `npm run build:web`，Deploy command 填 `npx wrangler deploy`。`wrangler.jsonc` 已配置静态网页、Workers AI binding 和 Workflow binding。
+3. 云端访问使用 Worker 内置的 HTTP Basic 密码保护，无需开通 Zero Trust 或填写付款资料。给 Worker 设置 `SITE_PASSWORD_HASH` Secret，值为共享密码的 SHA-256 小写十六进制摘要。所有网页资源和 API 请求均先验证；用户名固定为 `visitor`。Secret 绝不能放进 Git 仓库。当前部署使用 Wrangler 设置 Secret；以后可以在 Cloudflare 控制台的 Worker 设置中轮换它。
+4. 确认密码保护生效后才将 `workers_dev` 设为 `true`，以开放 `workers.dev` 地址。先试一次 2 条人生，再查看 Workers AI 使用量。若模型额度不足，请在 Cloudflare 中调整计划或暂时停止分享链接。
 
-也可在本地用 `npm run build:web && npx wrangler dev` 调试 Worker；发布用 `npm run deploy`。需要 Node.js 20+。Cloudflare 账号登录、GitHub 授权与 Access 邮箱名单需要在自己的账号中操作。
+也可在本地用 `npm run build:web && npm run dev:cloudflare` 调试 Worker；发布用 `npm run deploy`。本地调试时把 `SITE_PASSWORD_HASH=...` 放在被 Git 忽略的 `.dev.vars` 文件中。`dev:cloudflare` 会禁止 Wrangler 读取本地 Python 版的 `.env`，避免把私人 API Key 载入云端开发环境。需要 Node.js 20+。Cloudflare 账号登录与 GitHub 授权需要在自己的账号中操作。共享密码适合小范围邀请；若以后要按邮箱分别授权或撤销，再考虑 Zero Trust Access。
 
 ### GitHub Pages 展示
 
-仓库的 GitHub Actions 会把同一份首页构建成静态展示页并部署到 GitHub Pages；它不会调用模型。首次使用需要在仓库 **Settings → Pages → Build and deployment** 选择 **GitHub Actions**。在线模拟应使用受 Access 保护的 Cloudflare 链接，本地完整模拟继续用自己的 API Key。
+仓库的 GitHub Actions 会把同一份首页构建成静态展示页并部署到 GitHub Pages；它不会调用模型。首次使用需要在仓库 **Settings → Pages → Build and deployment** 选择 **GitHub Actions**。在线模拟应使用带访问密码的 Cloudflare 链接，本地完整模拟继续用自己的 API Key。
 
 ## 配置项
 
@@ -175,7 +175,7 @@ run.py                  启动脚本
 ## 边界与免责声明
 
 - 本地版是单人工具：无数据库、无登录、无搜索，数据只存在本机 `data/runs/`。
-- 云端版的用户输入会发送到 Cloudflare Workers AI；报告暂存在 Workflow 中。分享云端链接前应开启 Worker 级 Access。
+- 云端版的用户输入会发送到 Cloudflare Workers AI；报告暂存在 Workflow 中。分享云端链接前应设置强访问密码，只发给受邀者。
 - 模拟次数有限（默认每选择最多 100 个世界）：小样本下的"X / N"不具备
   统计显著性，请当作发散思考的素材，而不是决策依据。
 - 模型可能生成偏颇或不符合你实际情况的叙事，请保持批判性阅读。

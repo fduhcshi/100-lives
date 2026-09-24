@@ -5,6 +5,7 @@
   "scripts": {
     "build:web": "node scripts/build_web.mjs",
     "test:cloudflare": "node --test cloudflare/*.test.js",
+    "dev:cloudflare": "CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false wrangler dev",
     "deploy": "npm run build:web && wrangler deploy"
   },
   "devDependencies": {
