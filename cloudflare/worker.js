@@ -35,6 +35,7 @@ async function askAI(env, system, prompt, maxTokens = 2000) {
     ],
     max_tokens: maxTokens,
     temperature: 0.7,
+    reasoning_effort: "low",
   });
   return parseModelJson(modelText(response));
 }
@@ -69,14 +70,14 @@ export class SimulationWorkflow extends WorkflowEntrypoint {
       for (const choice of ["A", "B"]) {
         const name = `trajectory-${choice}-${universe.id}`;
         const trajectory = await step.do(name, STEP_CONFIG, async () => {
-          const raw = await askAI(this.env, "你是严谨的现实人生轨迹模拟器。让人物行为有因果，不编造必然的幸福或灾难。", trajectoryPrompt(request, universe, choice, startYear), 2300);
+          const raw = await askAI(this.env, "你是严谨的现实人生轨迹模拟器。让人物行为有因果，不编造必然的幸福或灾难。", trajectoryPrompt(request, universe, choice, startYear), Math.max(2300, 1100 + request.years * 700));
           return normalizeTrajectory(raw, choice, universe, request.years);
         });
         trajectories.push(trajectory);
       }
     }
 
-    const insight = await step.do("insight", STEP_CONFIG, () => askAI(this.env, "你负责解释两种选择的结构性差异和需要核实的信息。", insightPrompt(request, trajectories), 900));
+    const insight = await step.do("insight", STEP_CONFIG, () => askAI(this.env, "你负责解释两种选择的结构性差异和需要核实的信息。", insightPrompt(request, trajectories), 1800));
     return buildResult(runId, request, universes, trajectories, insight, (Date.now() - started) / 1000, 2 + trajectories.length);
   }
 }
@@ -139,8 +140,9 @@ async function futureChat(env, raw) {
       ...turns,
       { role: "user", content: message },
     ],
-    max_tokens: 450,
+    max_tokens: 1200,
     temperature: 0.7,
+    reasoning_effort: "low",
   });
   return json({ reply: modelText(response), future_year: futureYear });
 }
