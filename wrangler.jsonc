@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "one-hundred-lives",
   "main": "cloudflare/worker.js",
+  "workers_dev": false,
   "compatibility_date": "2026-09-24",
   "assets": {
     "directory": "cloudflare/public",

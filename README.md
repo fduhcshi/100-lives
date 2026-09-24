@@ -95,9 +95,9 @@ python run.py --port 8017
 ### 连接 GitHub 并部署
 
 1. 在 Cloudflare 的 **Workers & Pages → Create application → Import a repository** 连接 `fduhcshi/100-lives`。Worker 名称填写 `one-hundred-lives`，生产分支选 `main`，根目录为仓库根目录。
-2. Build command 填 `npm run build:web`，Deploy command 填 `npx wrangler deploy`。`wrangler.jsonc` 已配置静态网页、Workers AI binding 和 Workflow binding。保存后 Cloudflare 会从 GitHub 自动构建，之后每次推送 `main` 都可更新。
-3. 在 **Workers & Pages → one-hundred-lives → Access** 为该 Worker 开启 **All traffic**，策略只允许指定邮箱，并用 One-time PIN 登录。这样网页本身无需添加账号密码，访问者先通过 Cloudflare 验证，再进入完整网页；所有 API 路径也会一起保护。**在配置 Access 前不要把在线链接公开给别人**，以免消耗额度。
-4. 打开 Cloudflare 给出的 `workers.dev` 地址，先试一次 2 条人生，再查看 Workers AI 使用量。若模型额度不足，请在 Cloudflare 中调整计划或暂时停止分享链接。
+2. Build command 填 `npm run build:web`，Deploy command 填 `npx wrangler deploy`。`wrangler.jsonc` 已配置静态网页、Workers AI binding 和 Workflow binding。首次部署时 `workers_dev` 设为 `false`，避免未加访问限制就暴露模型接口。
+3. 在 **Workers & Pages → one-hundred-lives → Access** 为该 Worker 开启 **All traffic**，策略只允许指定邮箱，并用 One-time PIN 登录。这样网页本身无需添加账号密码，访问者先通过 Cloudflare 验证，再进入完整网页；所有 API 路径也会一起保护。
+4. Access 生效后，把 `wrangler.jsonc` 的 `workers_dev` 改为 `true` 并推送到 `main`；Cloudflare Git 集成会自动构建、发布在线地址。先试一次 2 条人生，再查看 Workers AI 使用量。若模型额度不足，请在 Cloudflare 中调整计划或暂时停止分享链接。
 
 也可在本地用 `npm run build:web && npx wrangler dev` 调试 Worker；发布用 `npm run deploy`。需要 Node.js 20+。Cloudflare 账号登录、GitHub 授权与 Access 邮箱名单需要在自己的账号中操作。
 
