@@ -90,13 +90,13 @@ python run.py --port 8017
 
 仓库中的 `cloudflare/` 是单独的 Workers AI 体验版，复用 `static/` 的页面和报告格式。它不读取本地 `.env`，也不需要把自己的 API Key 上传到 GitHub 或 Cloudflare。本地 `python run.py` 的配置和完整模拟流程保持原样。
 
-在线地址：[Cloudflare 模拟版](https://one-hundred-lives.fduhcshi.workers.dev/)（需要访问密码）；[GitHub Pages 静态展示](https://fduhcshi.github.io/100-lives/)（不调用模型）。
+在线地址：[Cloudflare 模拟版](https://100-lives.fduhcshi.workers.dev/)（需要访问密码）；[GitHub Pages 静态展示](https://fduhcshi.github.io/100-lives/)（不调用模型）。
 
 云端版为了控制 Workers AI 免费额度，默认每个选择 2 条人生，最多 3 条、5 年；省去本地版的 Critic 重生成和模型聚类，结果属于小样本体验。一次模拟大约调用 `2 + 2 × num_lives` 次模型，报告通过 Cloudflare Workflows 保存，免费计划完成后只保留 3 天，请及时下载 HTML。实际可用次数由模型的 Neurons 消耗决定，不保证固定每天多少次。与未来自己对话也会额外消耗额度。
 
 ### 连接 GitHub 并部署
 
-1. 在 Cloudflare 的 **Workers & Pages → one-hundred-lives → Settings → Builds → Connect** 连接 GitHub 仓库 `fduhcshi/100-lives`，生产分支选 `main`，根目录为仓库根目录。若尚未创建 Worker，也可从 **Create application → Import a repository** 开始。
+1. 在 Cloudflare 的 **Workers & Pages → 100-lives → Settings → Builds → Connect** 连接 GitHub 仓库 `fduhcshi/100-lives`，生产分支选 `main`，根目录为仓库根目录。若尚未创建 Worker，也可从 **Create application → Import a repository** 开始。
 2. Build command 填 `npm run build:web`，Deploy command 填 `npx wrangler deploy`。`wrangler.jsonc` 已配置静态网页、Workers AI binding 和 Workflow binding。
 3. 云端访问使用 Worker 内置的 HTTP Basic 密码保护，无需开通 Zero Trust 或填写付款资料。给 Worker 设置 `SITE_PASSWORD_HASH` Secret，值为共享密码的 SHA-256 小写十六进制摘要。所有网页资源和 API 请求均先验证；用户名固定为 `visitor`。Secret 绝不能放进 Git 仓库。当前部署使用 Wrangler 设置 Secret；以后可以在 Cloudflare 控制台的 Worker 设置中轮换它。
 4. 确认密码保护生效后才将 `workers_dev` 设为 `true`，以开放 `workers.dev` 地址。先试一次 2 条人生，再查看 Workers AI 使用量。若模型额度不足，请在 Cloudflare 中调整计划或暂时停止分享链接。

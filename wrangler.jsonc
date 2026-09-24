@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "one-hundred-lives",
+  "name": "100-lives",
   "main": "cloudflare/worker.js",
   "workers_dev": true,
   "preview_urls": false,
