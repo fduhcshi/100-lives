@@ -1,0 +1,13 @@
+{
+  "name": "100-lives-cloudflare",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:web": "node scripts/build_web.mjs",
+    "test:cloudflare": "node --test cloudflare/*.test.js",
+    "deploy": "npm run build:web && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "one-hundred-lives",
+  "main": "cloudflare/worker.js",
+  "compatibility_date": "2026-09-24",
+  "assets": {
+    "directory": "cloudflare/public",
+    "binding": "ASSETS"
+  },
+  "ai": { "binding": "AI" },
+  "workflows": [
+    {
+      "name": "one-hundred-lives-simulation",
+      "binding": "SIMULATION",
+      "class_name": "SimulationWorkflow"
+    }
+  ]
+}

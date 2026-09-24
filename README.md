@@ -9,7 +9,7 @@
 
 **A/B 人生对照 · 交互世界地图 · 自定义偏好 · 双路线时间线 · 与未来的自己对话**
 
-[看看页面效果](#页面效果) · [本地快速体验](#快速开始) · [了解模拟逻辑](#核心设计)
+[看看页面效果](#页面效果) · [本地快速体验](#快速开始) · [Cloudflare 在线版](#cloudflare-在线版) · [了解模拟逻辑](#核心设计)
 
 ![100 Lives 首页：写下现状与两个选择，开启平行人生探索](docs/images/home.png)
 
@@ -86,6 +86,25 @@ python run.py --port 8017
 
 打开浏览器访问 <http://127.0.0.1:8000>，填写现状描述和两个选择即可开始。
 
+## Cloudflare 在线版
+
+仓库中的 `cloudflare/` 是单独的 Workers AI 体验版，复用 `static/` 的页面和报告格式。它不读取本地 `.env`，也不需要把自己的 API Key 上传到 GitHub 或 Cloudflare。本地 `python run.py` 的配置和完整模拟流程保持原样。
+
+云端版为了控制 Workers AI 免费额度，默认每个选择 2 条人生，最多 3 条、5 年；省去本地版的 Critic 重生成和模型聚类，结果属于小样本体验。一次模拟大约调用 `2 + 2 × num_lives` 次模型，报告通过 Cloudflare Workflows 保存，免费计划完成后只保留 3 天，请及时下载 HTML。实际可用次数由模型的 Neurons 消耗决定，不保证固定每天多少次。与未来自己对话也会额外消耗额度。
+
+### 连接 GitHub 并部署
+
+1. 在 Cloudflare 的 **Workers & Pages → Create application → Import a repository** 连接 `fduhcshi/100-lives`。Worker 名称填写 `one-hundred-lives`，生产分支选 `main`，根目录为仓库根目录。
+2. Build command 填 `npm run build:web`，Deploy command 填 `npx wrangler deploy`。`wrangler.jsonc` 已配置静态网页、Workers AI binding 和 Workflow binding。保存后 Cloudflare 会从 GitHub 自动构建，之后每次推送 `main` 都可更新。
+3. 在 **Workers & Pages → one-hundred-lives → Access** 为该 Worker 开启 **All traffic**，策略只允许指定邮箱，并用 One-time PIN 登录。这样网页本身无需添加账号密码，访问者先通过 Cloudflare 验证，再进入完整网页；所有 API 路径也会一起保护。**在配置 Access 前不要把在线链接公开给别人**，以免消耗额度。
+4. 打开 Cloudflare 给出的 `workers.dev` 地址，先试一次 2 条人生，再查看 Workers AI 使用量。若模型额度不足，请在 Cloudflare 中调整计划或暂时停止分享链接。
+
+也可在本地用 `npm run build:web && npx wrangler dev` 调试 Worker；发布用 `npm run deploy`。需要 Node.js 20+。Cloudflare 账号登录、GitHub 授权与 Access 邮箱名单需要在自己的账号中操作。
+
+### GitHub Pages 展示
+
+仓库的 GitHub Actions 会把同一份首页构建成静态展示页并部署到 GitHub Pages；它不会调用模型。首次使用需要在仓库 **Settings → Pages → Build and deployment** 选择 **GitHub Actions**。在线模拟应使用受 Access 保护的 Cloudflare 链接，本地完整模拟继续用自己的 API Key。
+
 ## 配置项
 
 | 环境变量 | 说明 | 默认 |
@@ -121,6 +140,7 @@ python run.py --port 8017
 | GET | `/api/result/{run_id}/html` | 下载单文件 HTML 报告 |
 | POST | `/api/future-self-chat` | 与某条轨迹的"未来的你"对话 |
 | GET | `/api/health` | 健康检查（含 LLM 是否已配置） |
+| GET | `/api/config` | 前端运行模式与规模限制 |
 
 ## 测试
 
@@ -145,6 +165,8 @@ app/
                         汇总、流水线编排、运行存储、未来对话
   utils/                JSON 解析、重试、日志
 static/                 原生 HTML / CSS / JS 前端（无构建步骤）
+cloudflare/             Workers AI 在线体验版（Workflow 编排）
+scripts/build_web.mjs   构建 Cloudflare 静态资源和 GitHub Pages 展示页
 tests/                  pytest 测试套件（离线）
 data/runs/              运行结果（JSON，已 gitignore）
 run.py                  启动脚本
@@ -152,7 +174,8 @@ run.py                  启动脚本
 
 ## 边界与免责声明
 
-- 本地单人工具：无数据库、无登录、无搜索，数据只存在本机 `data/runs/`。
+- 本地版是单人工具：无数据库、无登录、无搜索，数据只存在本机 `data/runs/`。
+- 云端版的用户输入会发送到 Cloudflare Workers AI；报告暂存在 Workflow 中。分享云端链接前应开启 Worker 级 Access。
 - 模拟次数有限（默认每选择最多 100 个世界）：小样本下的"X / N"不具备
   统计显著性，请当作发散思考的素材，而不是决策依据。
 - 模型可能生成偏颇或不符合你实际情况的叙事，请保持批判性阅读。

@@ -34,6 +34,31 @@
   var clockTimer = null;
   var startedAt = 0;
   var finished = false;
+  var cloudMode = false;
+
+  async function loadConfig() {
+    try {
+      var res = await fetch("/api/config");
+      if (!res.ok) return;
+      var config = await res.json();
+      if (config.mode !== "cloudflare") return;
+      cloudMode = true;
+      Array.from(els.numLives.options).forEach(function (option) {
+        if (Number(option.value) > config.max_lives) option.remove();
+      });
+      els.numLives.value = String(config.default_lives);
+      Array.from(els.years.options).forEach(function (option) {
+        if (Number(option.value) > config.max_years) option.remove();
+      });
+      els.profile.maxLength = 1500;
+      els.choiceA.maxLength = 200;
+      els.choiceB.maxLength = 200;
+      updateCharCount();
+      var note = $("mode-note");
+      note.textContent = "Cloudflare 在线体验版：每个选择最多 " + config.max_lives + " 条人生。为了控制免费额度，轨迹数量和输入长度有限制；完整规模可在本地版运行。云端报告会在几天后过期，完成后请及时下载。";
+      note.style.display = "block";
+    } catch (e) { /* local service may be starting */ }
+  }
 
   /* ---------------- utils ---------------- */
 
@@ -116,6 +141,8 @@
 
   function updateCharCount() {
     text(els.charCount, String(els.profile.value.length));
+    var denominator = els.charCount.parentElement;
+    if (cloudMode && denominator) denominator.lastChild.textContent = " / 1500";
   }
 
   /* ---------------- sample ---------------- */
@@ -170,7 +197,7 @@
     if (st.stage === "universes") {
       line = "已生成 " + (d.universes_done != null ? d.universes_done : 0) + " / " +
         (d.universes_total != null ? d.universes_total : "?") + " 个平行世界";
-    } else if (st.stage === "simulation") {
+    } else if (st.stage === "simulation" && d.total != null) {
       var total = d.total != null ? d.total : "?";
       var checkedTotal = (typeof total === "number") ? 2 * total : "?";
       line = "选择 A：" + (d.done_a != null ? d.done_a : 0) + "/" + total +
@@ -204,7 +231,7 @@
     try {
       var res = await fetch("/api/status/" + encodeURIComponent(runId));
       if (res.status === 404) {
-        showBox(els.progressError, "未找到该运行", "服务器上没有这次模拟的记录，可能服务已重启。", null, true);
+        showBox(els.progressError, "未找到该运行", cloudMode ? "云端没有这次模拟的记录，报告可能已过期。" : "服务器上没有这次模拟的记录，可能服务已重启。", null, true);
         finish("failed");
         return;
       }
@@ -241,7 +268,7 @@
       if (e && e.handled) return;
       backToForm();
       showBox(els.submitError, "无法连接服务器",
-        "提交失败，请确认后端服务已在本机启动，然后重试。");
+        cloudMode ? "提交失败，请检查网络连接后重试。" : "提交失败，请确认后端服务已在本机启动，然后重试。");
     }
   }
 
@@ -338,4 +365,5 @@
   els.fillSample.addEventListener("click", fillSample);
 
   updateCharCount();
+  loadConfig();
 })();

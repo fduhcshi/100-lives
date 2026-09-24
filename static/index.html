@@ -11,11 +11,12 @@
     <div class="wrap">
       <h1>100 LIVES<span class="star" aria-hidden="true">✦</span></h1>
       <p class="subtitle">在决定之前，把人生过 100 遍</p>
-      <p class="tagline">AI 平行人生模拟器 · 本地运行 · 所有数字是模拟出现频率，不是现实概率</p>
+      <p class="tagline">AI 平行人生模拟器 · 所有数字是模拟出现频率，不是现实概率</p>
     </div>
   </header>
 
   <main class="wrap">
+    <div id="mode-note" class="alert" style="display: none; max-width: 860px; margin: 0 auto 16px;"></div>
     <!-- ============ 输入表单 ============ -->
     <div id="form-section" class="card" style="max-width: 860px; margin: 0 auto;">
       <form id="simulate-form" novalidate>
@@ -61,6 +62,8 @@
           <div class="field">
             <label for="num-lives">每个选择模拟多少条人生</label>
             <select id="num-lives" name="num_lives">
+              <option value="2">2（云端轻量体验）</option>
+              <option value="3">3（云端轻量体验）</option>
               <option value="5">5（开发测试）</option>
               <option value="20" selected>20（推荐）</option>
               <option value="50">50</option>
@@ -112,7 +115,7 @@
 
   <footer>
     <div class="wrap">
-      <p class="f-note">100 LIVES · 本地运行的 AI 平行人生模拟器。本页所有数字是『在当前模型与提示词下的模拟出现频率』，不是现实概率，也不是预测。</p>
+      <p class="f-note">100 LIVES · AI 平行人生模拟器。本页所有数字是『在当前模型与提示词下的模拟出现频率』，不是现实概率，也不是预测。</p>
     </div>
   </footer>
 

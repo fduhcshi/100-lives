@@ -90,6 +90,11 @@ async def health() -> dict:
     return {"status": "ok", "llm_configured": llm_module.llm_configured()}
 
 
+@app.get("/api/config")
+async def web_config() -> dict:
+    return {"mode": "local", "max_lives": 100, "default_lives": 20, "max_years": 10}
+
+
 @app.post("/api/simulate")
 async def simulate(request: SimulationRequest) -> JSONResponse:
     assert store is not None
