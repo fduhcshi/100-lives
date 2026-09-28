@@ -21,9 +21,9 @@ from app.services.simulator import (
 )
 from app.services.universe_generator import generate_universes
 
-PROFILE = "我是一名 30 岁的运营专员，单身，最近在纠结要不要辞职去另一座城市发展。"
-CHOICE_A = "留在现在的城市，继续当前工作"
-CHOICE_B = "辞职去另一座城市，接受新工作"
+PROFILE = "想在闲暇时间培养一项可以长期坚持的爱好，每周有一个下午可以投入。"
+CHOICE_A = "每周参加陶艺课，练习手作"
+CHOICE_B = "学习摄影，记录日常与自然"
 
 
 def _universe(uid: int = 1) -> Universe:
@@ -401,11 +401,11 @@ async def test_future_self_prompt_includes_profile():
     universe = {"macro_environment": "行业平稳", "career_shock": "无", "financial_shock": "无",
                 "relationship_shock": "无", "opportunity": "无", "random_event": "无"}
     reply = await chat_with_future_self(
-        future_year=2027, profile="30岁，运营专员，纠结要不要换城市。",
-        choice_label="A", choice_text="留在现在的城市", trajectory=trajectory, universe=universe,
+        future_year=2027, profile="想培养新爱好，正在陶艺和摄影之间做选择。",
+        choice_label="A", choice_text="每周参加陶艺课", trajectory=trajectory, universe=universe,
         message="你后悔吗？", history=[],
     )
     assert reply
     provider = llm_module.get_provider()
-    assert "运营专员" in provider.seen_user
-    assert "换城市" in provider.seen_user
+    assert "陶艺" in provider.seen_user
+    assert "摄影" in provider.seen_user

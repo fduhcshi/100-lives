@@ -19,9 +19,9 @@ def client(tmp_path, monkeypatch):
 
 
 VALID_REQUEST = {
-    "profile": "我是一名 30 岁的运营专员，单身，最近在纠结要不要辞职去另一座城市发展。",
-    "choice_a": "留在现在的城市，继续当前工作",
-    "choice_b": "辞职去另一座城市，接受新工作",
+    "profile": "想在闲暇时间培养一项可以长期坚持的爱好，每周有一个下午可以投入。",
+    "choice_a": "每周参加陶艺课，练习手作",
+    "choice_b": "学习摄影，记录日常与自然",
     "years": 2,
     "num_lives": 2,
 }
