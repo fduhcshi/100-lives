@@ -578,9 +578,11 @@
     var finalYear = (DATA.start_year || 0) + (DATA.request.years || 0) - 1;
     var chatButton = $("modal-chat-btn");
     if (window.__100_LIVES_STANDALONE__) {
-      chatButton.textContent = "离线报告无法与未来对话";
+      chatButton.textContent = window.__100_LIVES_PAGES_DEMO__ ? "静态示例不支持对话" : "离线报告无法与未来对话";
       chatButton.disabled = true;
-      chatButton.title = "这份离线 HTML 可以浏览完整报告；模型对话需要在有模型服务的网页中打开结果页。";
+      chatButton.title = window.__100_LIVES_PAGES_DEMO__
+        ? "这份示例只展示报告交互，不会发送消息或调用模型。"
+        : "这份离线 HTML 可以浏览完整报告；模型对话需要在有模型服务的网页中打开结果页。";
     } else {
       chatButton.textContent = "和 " + finalYear + " 年的这个自己聊聊 ✦";
       chatButton.disabled = false;

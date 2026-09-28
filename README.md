@@ -4,24 +4,24 @@
 
 **如果当时选了另一条路，现在的我会在哪里？**
 
-留在熟悉的城市，还是去远方接受新机会？继续积累，还是重新出发？
+尝试陶艺，还是学习摄影？继续熟悉的节奏，还是试一种新的生活方式？
 写下你的现状和两个选择，让 AI 在相同的外部世界里展开两种人生，再把它们放到一张可探索的网页报告中。
 
 **A/B 人生对照 · 交互世界地图 · 自定义偏好 · 双路线时间线 · 与未来的自己对话**
 
-[看看页面效果](#页面效果) · [本地快速体验](#快速开始) · [Cloudflare 在线版](#cloudflare-在线版) · [了解模拟逻辑](#核心设计)
+[GitHub Pages 完整示例](https://fduhcshi.github.io/100-lives/) · [本地快速体验](#快速开始) · [Cloudflare 部署说明](#cloudflare-在线版) · [了解模拟逻辑](#核心设计)
 
 ![100 Lives 首页：写下现状与两个选择，开启平行人生探索](docs/images/home.png)
 
-> ⚠️ 本项目是思想实验与叙事工具，不是预测系统。所有输出由大模型生成，
-> 展示的是"N 个模拟世界中的分布"，**不是概率**，更不是命运。
+> ⚠️ 本项目是思想实验与叙事工具，不是预测系统。本地实际模拟由大模型生成；GitHub Pages 下方的报告是手工编写的虚构演示。
+> "N 个模拟世界中的分布"**不是概率**，更不是命运。
 
 ## 页面效果
 
 不是只能从头读到尾的长篇回答，而是一份可以点击、比较、追问和保存的 **HTML 人生报告**。
 所有内容在同一个页面连续展示，无需切换阅读模式。
 
-> 以下为当前网页的真实截图。报告使用虚构人物与离线 Mock 模板生成，仅展示界面与交互，不代表真实模型的生成质量。示例为 20 个共享世界 × A/B 两种选择，共 40 条人生；实际数量可配置。
+> 以下为本地页面的真实截图。报告使用虚构情境与离线 Mock 模板生成，仅展示界面与交互，不代表真实模型的生成质量。截图示例为 20 个共享世界 × A/B 两种选择，共 40 条人生；GitHub Pages 下方的手工编写示例为 6 个世界、12 条人生。
 
 ### 看见选择的差别，而不只是一句“建议选 B”
 
@@ -90,7 +90,7 @@ python run.py --port 8017
 
 仓库中的 `cloudflare/` 是单独的 Workers AI 体验版，复用 `static/` 的页面和报告格式。它不读取本地 `.env`，也不需要把自己的 API Key 上传到 GitHub 或 Cloudflare。本地 `python run.py` 的配置和完整模拟流程保持原样。
 
-在线地址：[Cloudflare 模拟版](https://100-lives.fduhcshi.workers.dev/)（需要访问密码）；[GitHub Pages 静态展示](https://fduhcshi.github.io/100-lives/)（不调用模型）。
+Cloudflare Worker 目前保留，但公开网址已关闭。[GitHub Pages 完整静态示例](https://fduhcshi.github.io/100-lives/)可以浏览报告，不调用模型。
 
 云端版为了控制 Workers AI 免费额度，默认每个选择 2 条人生，最多 3 条、5 年；省去本地版的 Critic 重生成和模型聚类，结果属于小样本体验。一次模拟大约调用 `2 + 2 × num_lives` 次模型，报告通过 Cloudflare Workflows 保存，免费计划完成后只保留 3 天，请及时下载 HTML。实际可用次数由模型的 Neurons 消耗决定，不保证固定每天多少次。与未来自己对话也会额外消耗额度。
 
@@ -105,7 +105,7 @@ python run.py --port 8017
 
 ### GitHub Pages 展示
 
-仓库的 GitHub Actions 会把同一份首页构建成静态展示页并部署到 GitHub Pages；它不会调用模型。首次使用需要在仓库 **Settings → Pages → Build and deployment** 选择 **GitHub Actions**。在线模拟应使用带访问密码的 Cloudflare 链接，本地完整模拟继续用自己的 API Key。
+仓库的 GitHub Actions 会构建并部署 GitHub Pages：先显示输入页，向下滚动即可浏览一份完整的虚构示例报告。示例的 A/B 总览、偏好滑块、世界地图、双路线时间线、轨迹详情和分享海报都可交互；输入框不会生成新报告，未来自己对话也不可用。GitHub Pages 不调用模型。首次使用需要在仓库 **Settings → Pages → Build and deployment** 选择 **GitHub Actions**。本地完整模拟继续用自己的 API Key；Cloudflare 公开网址目前关闭。
 
 ## 配置项
 
